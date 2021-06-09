@@ -694,23 +694,23 @@ class ExplDevExp(Experiment):
 		background = self.clear_screen(white)
 
 
-# 		for trial in self.pretest_set:
-# 			self.do_trial(trial, 'pretest')
-# 		
-# 		for train_trial in self.training_set:
-# 			self.show_instructions(train_trial[0],'next.gif', None)
-# 			self.do_trial(train_trial[1], 'training')
-# 			self.do_trial(train_trial[2], 'training')
-# 		
-# 		for trial in self.posttest_set:
-# 			print trial
-# 			self.do_trial(trial, 'posttest')
-# 		
-# 		for trial in self.gen4_set:
-# 			self.do_trial(trial, 'gen-4')
-# 		
-# 		for trial in self.gencon_set:
-# 			self.do_trial(trial, 'gencon')
+ 		for trial in self.pretest_set:
+ 			self.do_trial(trial, 'pretest')
+ 		
+ 		for train_trial in self.training_set:
+ 			self.show_instructions(train_trial[0],'next.gif', None)
+			self.do_trial(train_trial[1], 'training')
+ 			self.do_trial(train_trial[2], 'training')
+ 		
+ 		for trial in self.posttest_set:
+ 			print trial
+ 			self.do_trial(trial, 'posttest')
+ 		
+ 		for trial in self.gen4_set:
+ 			self.do_trial(trial, 'gen-4')
+ 		
+ 		for trial in self.gencon_set:
+ 			self.do_trial(trial, 'gencon')
 		
 		for transfer_trial in self.transfer_set:
 			self.do_transfer_trial(transfer_trial)
