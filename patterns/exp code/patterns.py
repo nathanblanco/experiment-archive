@@ -1,11 +1,6 @@
 #!/usr/bin/pythonw
 
 
-# TO DO;
-# needs instructions (and new backstory?)
-# needs memory trials interleaved every 5 trials:
-# --how many do you get for this one?
-# --do yoiu know or are you guessing?
 
 #------------------------------------------------------------
 # import modules
