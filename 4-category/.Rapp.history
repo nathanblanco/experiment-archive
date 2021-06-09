@@ -1,0 +1,729 @@
+acf(data$residuals)
+pacf(data$residuals)
+Box-Ljung test#
+for (i in 1:10) {#
+#
+     print(Box.test(data_sorted_age$residuals, lag=i, type="Ljung"))#
+#
+}
+for (i in 1:10) {#
+#
+     print(Box.test(data$residuals, lag=i, type="Ljung"))#
+#
+}
+qqPlot(data$residuals)
+library(e1071)#
+#Approximate standard error of skewness is SQRT(6/n) from Pearson.#
+#
+skewness(data_sorted_age$residuals, type=2)#
+se.skewness <- (6/10)^.5#
+se.skewness#
+#Approximate standard error of kurtosis is SQRT(24/n) from Pearson.#
+#
+kurtosis(data_sorted_age$residuals, type=2)#
+se.kurtosis <- (24/10)^.5#
+se.kurtosis
+library(e1071)#
+#Approximate standard error of skewness is SQRT(6/n) from Pearson.#
+#
+skewness(data$residuals, type=2)#
+se.skewness <- (6/10)^.5#
+se.skewness#
+#Approximate standard error of kurtosis is SQRT(24/n) from Pearson.#
+#
+kurtosis(data$residuals, type=2)#
+se.kurtosis <- (24/10)^.5#
+se.kurtosis
+shapiro.test(data_sorted_age$residuals)
+shapiro.test(data$residuals)
+outlierTest(reg1)
+data$y2 = y + residual*2
+data$y2 = data$y + data$residual*2
+data$y2 = data$y + data$residuals*2
+data$y2 = data$attrac + data$residuals*2
+reg2 = lm(y2~height, data=data)
+summary(reg2)
+data
+mean(data$attrac)
+anova(reg2)
+anova(reg1)
+summary(reg2)
+summary(reg1)
+install.packages("bestglm" dependencies = T)
+install.packages("bestglm", dependencies = T)
+library(bestglm)
+datas <- NULL#
+#
+datas$Target <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)#
+datas$Height <- c(62, 67, 72, 77, 61, 66, 71, 76, 63, 68, 73, 78, 62, 67, 72, 77)#
+datas$Weight <- c(140, 150, 160, 170, 150, 160, 170, 180, 160, 170, 180, 190, 170, 180, 190, 200)#
+datas$Attrac <- c(9, 8, 7, 4, 8, 7, 6, 5, 5, 6, 7, 8, 4, 5, 7, 10)#
+#
+datas <- as.data.frame(datas)
+datas
+reg1 <- lm(Attrac ~ Height + Weight + Height:Weight, data=datas)#
+summary(reg1)
+reg1 <- lm(Attrac ~ Height + Weight, data=datas)#
+summary(reg1)
+reg1 <- lm(Attrac ~ Height + Weight + Height:Weight, data=datas)#
+summary(reg1)
+step(reg1)
+ANOVA(reg1)
+aov(reg1)
+0.196850+0.496331+26.45511+18.601708
+26.45511/45.75
+reg1
+summary(reg1)
+aov(reg1)
+ANOVA(reg1)
+AIC(reg1)
+logLik(reg1)
+-23.90833*-2
+47.8166+2*4
+extractAIC(reg1)
+AIC(reg1)
+library(effects)#
+#
+plot(allEffects(reg1), ask=FALSE)
+install.packages(effects)
+install.packages('effects')
+library(effects)#
+#
+plot(allEffects(reg1), ask=FALSE)
+datas
+mean(datas$Height)-sd(data$Height)#
+mean(datas$Height)#
+mean(datas$Height)+sd(data$Height)
+datas
+datas$Height
+mean(datas$Height)-sd(datas$Height)#
+mean(datas$Height)#
+mean(datas$Height)+sd(datas$Height)
+summary(reg1)
+s_datas <- datas[order(datas$height),]
+s_datas <- datas[order(datas$Height),]
+s_datas
+s_datas <- datas[order(datas$Weight),]
+s_datas
+reg1$residuals
+qqPlot(reg1$residuals)
+library(car)
+qqPlot(reg1$residuals)
+hist(reg1$residuals)
+length(datas$Target)
+skewness(reg1$residuals, type=2)#
+se.skewness <- (6/16)^.5#
+se.skewness
+library(e1071)
+skewness(reg1$residuals, type=2)#
+se.skewness <- (6/16)^.5#
+se.skewness
+kurtosis(data_sorted_age$residuals, type=2)#
+se.kurtosis <- (24/16)^.5#
+se.kurtosis
+kurtosis(reg1$residuals, type=2)#
+se.kurtosis <- (24/16)^.5#
+se.kurtosis
+qqPlot(reg1$residuals)
+log(200)
+89.5739*2 + log(200)
+84.641*2 + 2*log(200)
+86.641*2 + 2*log(200)
+qt(.025, 8)
+abs(qt(.025,8))
+x = c(1, 2, 3, 4, 5, 6, 7, 8)#
+y = c(5, 14, 28, 26, 21, 45, 38)#
+#
+reg <- lm(y~x)
+x = c(1, 2, 3, 4, 5, 6, 7, 8)#
+y = c(5, 14, 28, 26, 21, 30, 45, 38)#
+#
+reg <- lm(y~x)
+summary(reg)
+plot(y~x)
+mean(y)
+sum(y)
+x = c(1, 2, 3, 4, 5, 6, 7, 8)#
+y = c(6, 14, 28, 26, 21, 30, 45, 38)#
+#
+reg <- lm(y~x)
+summary(reg)
+mean(y)
+y2 = 26-(26-y)/2
+y2
+reg(y2~x)
+reg2 <- lm(y2~x)
+reg2
+summary(reg2)
+plot(y2~x)
+mean(y2)
+ssy <- (y - mean(y))^2
+ssy
+sum(ssy)
+ssy2 <- (y - mean(y2))^2
+ssy2
+ssy2 <- (y2 - mean(y2))^2
+ssy2
+sum(ssy2)
+anova(reg)
+anova(reg2)
+859.52+234.48
+214.881+58.619
+273*4
+predicted.values <- predict(reg, se.fit=TRUE)#
+predicted.values#
+#
+pred <- as.vector(predicted.values$fit)#
+se <- as.vector(predicted.values$se.fit)
+se
+predicted.values2 <- predict(reg2, se.fit=TRUE)#
+predicted.values2#
+#
+pred2 <- as.vector(predicted.values2$fit)#
+se2 <- as.vector(predicted.values2$se.fit)
+se2
+se/se2
+reg1$residuals
+reg$residuals
+reg2$residuals
+reg$residuals/reg2$residuals
+plot(y~x)
+abline(reg)
+plot(y2~x)
+abline(reg2)
+abline(reg)
+summary(reg)
+summary(reg2)
+anova(reg)
+anova(reg2)
+214.88/9.77
+reg
+reg2
+summary(reg)
+summary(reg2)
+data <- NULL#
+#
+data$y <- c(20,26,30,29,24,#
+		  34,44,48,44,36,#
+		  44,65,72,67,45,#
+		  55,84,90,82,53)#
+data$x1 <- c(1,1,1,1,1,#
+		   2,2,2,2,2,#
+		   3,3,3,3,3,#
+		   4,4,4,4,4)#
+data$x2 <- c(1,2,3,4,5,#
+		   1,2,3,4,5,#
+		   1,2,3,4,5,#
+		   1,2,3,4,5)#
+#
+data <- as.data.frame(data)
+data
+plot(y~x1)
+plot(y~x1, data=data)
+plot(y~x2, data=data)
+regX1 <- lm(y ~ x1, data=data)#
+regX2 <- lm(y ~ x2, data=data)#
+#
+reg1_simple <- lm(y ~ x1 + x2, data=data)#
+#
+AIC(regX1)#
+AIC(regX2)#
+AIC(reg1_simple)
+regX1 <- lm(y ~ x1, data=data)#
+regX2 <- lm(y ~ x2, data=data)#
+#
+reg1_simple <- lm(y ~ x1 + x2, data=data)#
+reg1_int <- lm(y ~ x1 + x2 + x1:x2, data=data)#
+#
+AIC(regX1)  # 156#
+AIC(regX2)#
+AIC(reg1_simple)#
+AIC(reg1_int)
+AIC(regX1_poly3)#
+AIC(regX1_poly2)
+regX1_poly3 <- lm(y ~ x1 + I(x1^2) + I(x1^3), data=data)#
+regX1_poly2 <- lm(y ~ x1 + I(x1^2), data=data)#
+#
+AIC(regX1_poly3)#
+AIC(regX1_poly2)
+regX2_poly3 <- lm(y ~ x2 + I(x2^2) + I(x2^3), data=data)#
+regX2_poly2 <- lm(y ~ x2 + I(x2^2), data=data)#
+#
+AIC(regX2_poly3)#
+AIC(regX2_poly2)
+regX1_X2_poly2 <- lm(y ~ x1 + x2 + x1:x2 + I(x2^2) + x1:I(x2^2), data=data)#
+summary(regX1_X2_poly2)#
+AIC(regX1_X2_poly2)
+summary(reg1_int)
+regX1_X2_poly2 <- lm(y ~ x1 + x2 + I(x2^2), data=data)#
+summary(regX1_X2_poly2)
+AIC(regX1_X2_poly2)
+regX1_X2_poly2 <- lm(y ~ x1 + x2 + x1:x2 + I(x2^2), data=data)#
+summary(regX1_X2_poly2)#
+AIC(regX1_X2_poly2) #81.29939
+regX1_X2_poly2 <- lm(y ~ x1 + x2 + I(x2^2) + x1:I(x2^2), data=data)#
+summary(regX1_X2_poly2)#
+AIC(regX1_X2_poly2) #81.29939
+regX1_X2_poly2 <- lm(y ~ x1 + x2 + x1:x2 + I(x2^2) + x1:I(x2^2), data=data)#
+summary(regX1_X2_poly2)#
+AIC(regX1_X2_poly2) #81.29939
+plot(y~x2)
+plot(y~x2, data=data)
+plot(y~x1, data=data)
+int <- lm(y~1)
+AIC(int)
+int <- lm(y~1, data=data)
+AIC(int)
+reg1_simple <- lm(y ~ x1 + x2, data=data)#
+reg1_int <- lm(y ~ x1 + x2 + x1:x2, data=data)#
+#
+AIC(regX1)  # 156#
+AIC(regX2)#
+AIC(reg1_simple)#
+AIC(reg1_int)
+regX1_X2_poly2 <- lm(y ~ x1 + x2 + x1:x2 + I(x2^2) + x1:I(x2^2), data=data)#
+summary(regX1_X2_poly2)#
+AIC(regX1_X2_poly2)
+regX1_X2_poly2$residuals
+data$residuals <- regX1_X2_poly2$residuals
+data
+qqPlot(data$residuals)
+library(car)#
+library(foreign)#
+library(e1071)#
+library(car)#
+library(foreign)#
+library(lattice)#
+library(bestglm)#
+library(QuantPsyc)
+qqPlot(data$residuals)
+hist(data_sorted_age$residuals)
+hist(data$residuals)
+skewness(data$residuals, type=2)#
+se.skewness <- (6/10)^.5#
+se.skewness
+kurtosis(data$residuals, type=2)#
+se.kurtosis <- (24/10)^.5#
+se.kurtosis
+shapiro.test(data$residuals)
+qqPlot(data$residuals)
+qqPlot(data$residuals, simulate=T)
+skewness(data$residuals, type=2)#
+se.skewness <- (6/20)^.5#
+se.skewness#
+#Approximate standard error of kurtosis is SQRT(24/n) from Pearson.#
+kurtosis(data$residuals, type=2)#
+se.kurtosis <- (24/20)^.5#
+se.kurtosis
+d.t.unpaired<-function(t.val,n1,n2){#
+  d<-t.val*sqrt((n1+n2)/(n1*n2))#
+  names(d)<-"effect size d"#
+  return(d)#
+}#
+#
+#performance#
+d.t.unpaired( 2.402, 52, 58)#
+#
+# RT#
+d.t.unpaired( 6.5941, 52, 58)#
+#
+# drift rate#
+d.t.unpaired( 2.8385, 52, 58)#
+#
+# exploration rates#
+d.t.unpaired( 0.0362, 52, 58)#
+#
+# BIC difference#
+d.t.unpaired( 1.6298, 52, 58)
+library(sn)
+dsn(x, location=0, scale=1, shape=0, log=FALSE)
+install.packages(sn)
+thing <- c(1,3,3)#
+thing2 <- c(2,3,4)#
+thing3 <- c(5,5,5)#
+#
+things <- as.data.frame(c(thing, thing2, thing3)
+)
+things
+things$group <- factor(c(1,1,1,2,2,2,3,3,3))
+things
+names(things)= c('value','group')
+things
+x <- aov(value~group, data=things)
+summary(x)
+mean(thing$value)
+mean(things$value)
+mean(things$value)-mean(things[things$group == 1,]$value)
+mean(things$value)-mean(things[things$group == 2,]$value)
+mean(things$value)-mean(things[things$group == 3,]$value)
+1.1111111^2
+0.4444444^2
+1.55555556^2
+1.234568+0.1075308+2.419753
+3.761852*3
+x <- c(1,2,3,4,5,6,7,8,9,10)
+x^0.3
+x^0.7
+x^0.1
+x^0.9
+x1 = x^0.1
+x2 = x^0.2
+x3 = x^0.5
+x4 = x^0.8
+x5 = x^0.9
+plot(x1)
+par(mfrow=c(2,3))
+plot(x1, type=l)
+plot(x1, type='l')
+plot(x2, type='l')
+plot(x3, type='l')
+plot(x4, type='l')
+plot(x5, type='l')
+x0 <- x^0.02
+plot(x0, type='l')
+x6<- x^2.5
+plot(x6, type='l')
+means <- c(.5, .7)#
+#
+x <- barplot(means,#
+			names.arg = c('Dep.', 'Non'),#
+			col = c('black', 'grey'),#
+			ylab = "Performance",#
+			ylim = c(0, 1.0))
+means <- c(.4, .8)#
+#
+x <- barplot(means,#
+			names.arg = c('Dep.', 'Non'),#
+			col = c('black', 'white'),#
+			ylab = "Performance",#
+			ylim = c(0, 1.0))
+means <- c(.8, .4)#
+#
+x <- barplot(means,#
+			names.arg = c('Dep.', 'Non'),#
+			col = c('black', 'white'),#
+			ylab = "Performance",#
+			ylim = c(0, 1.0))
+means <- c(.8, .4)#
+#
+x <- barplot(means,#
+			names.arg = c('Dep', 'Non'),#
+			col = c('black', 'white'),#
+			ylab = "Performance",#
+			ylim = c(0, 1.0),#
+			cex.names = 2.0)
+means <- c(.4, .8)#
+#
+x <- barplot(means,#
+			names.arg = c('Dep', 'Non'),#
+			col = c('black', 'white'),#
+			ylab = "Performance",#
+			ylim = c(0, 1.0),#
+			cex.names = 2.0)
+x <- seq(6)-1#
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.10, 0.14, 0.18, 0.24, 0.28, 0.32)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=2, col="green")#
+#
+legend(0.3, 0.78, c("Optimal", "Gambler's Fallacy"), #
+	   col = c("purple", "green"), #
+	   lty = c(1,2), cex = 1.2)
+x <- seq(6)-1#
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.10, 0.14, 0.18, 0.24, 0.28, 0.32)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=2, col="green")#
+#
+legend(0.3, 0.78, c("Optimal", "Gambler's Fallacy"), #
+	   col = c("purple", "green"), #
+	   lty = c(1,2), cex = 1.2)
+x <- seq(6)-1#
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.10, 0.14, 0.18, 0.22, 0.26, 0.30)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=2, col="green")#
+#
+legend(0.3, 0.78, c("Optimal", "Gambler's Fallacy"), #
+	   col = c("purple", "green"), #
+	   lty = c(1,2), cex = 1.2)
+x <- seq(6)-1#
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=2, col=c(20,250,20))
+x <- seq(6)-1#
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=2, col=c(20,20,250))#
+#
+legend(0.3, 0.78, c("Optimal", "Gambler's Fallacy"), #
+	   col = c("purple", c(20,20,250)), #
+	   lty = c(1,2), cex = 1.2)
+x <- seq(6)-1#
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=2, col=rgb(20,20,250))#
+#
+legend(0.3, 0.78, c("Optimal", "Gambler's Fallacy"), #
+	   col = c("purple", rgb(20,20,250)), #
+	   lty = c(1,2), cex = 1.2)
+x <- seq(6)-1#
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=2, col=rgb(.1,.1,.9))
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=2, col=rgb(.1,.9,.1))
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=2, col=rgb(.1,.87,.24))
+x <- seq(6)-1#
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=2, col=rgb(.15,.87,.37))
+x <- seq(6)-1#
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=2, col=rgb(.21,.87,.66))
+x <- seq(6)-1#
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=2, col=rgb(.45,.95,.66))
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=1, col=rgb(.45,.95,.66))
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=1, col=rgb(.66,.95,.66))
+x <- seq(6)-1#
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=1, col=rgb(.1,.1,.1))
+lines(x, GF_means, lty=1, col=rgb(.1,.6,.1))
+legend(0.3, 0.78, c("Optimal", "Gambler's Fallacy"), #
+	   col = c("purple", rgb(.1,.6,.1)), #
+	   lty = c(1,2), cex = 1.2)
+legend(0.3, 0.38, c("Optimal", "Gambler's Fallacy"), #
+	   col = c("purple", rgb(.1,.6,.1)), #
+	   lty = c(1,2), cex = 1.2)
+legend(0.3, 0.38, c("Optimal", "Gambler's Fallacy"), #
+	   col = c("purple", rgb(.1,.6,.1)), #
+	   lty = c(1,1), cex = 1.2)
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.2, cex.lab =1.2,#
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=1, col=rgb(.1,.6,.1))#
+#
+legend(0.3, 0.38, c("Optimal", "Gambler's Fallacy"), #
+	   col = c("purple", rgb(.1,.6,.1)), #
+	   lty = c(1,1), cex = 1.2)
+x <- seq(6)-1#
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.8, cex.lab =1.8,#
+	 cex.main = 1.6, #
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=1, col=rgb(.1,.6,.1))#
+#
+legend(0.3, 0.38, c("Optimal", "Gambler's Fallacy"), #
+	   col = c("purple", rgb(.1,.6,.1)), #
+	   lty = c(1,1), cex = 1.8)
+x <- seq(6)-1#
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+par(mar=c(5,6,4,1)+.1)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.9, cex.lab =1.9,#
+	 cex.main = 1.6, #
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=1, col=rgb(.1,.6,.1))#
+#
+legend(0.3, 0.38, c("Optimal", "Gambler's Fallacy"), #
+	   col = c("purple", rgb(.1,.6,.1)), #
+	   lty = c(1,1), cex = 1.9)
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.9, cex.lab =1.9,#
+	 cex.main = 1.9, #
+	 col = "purple")#
+	 #,#
+	 #)#
+lines(x, GF_means, lty=1, col=rgb(.1,.6,.1))#
+#
+legend(0.3, 0.38, c("Optimal", "Gambler's Fallacy"), #
+	   col = c("purple", rgb(.1,.6,.1)), #
+	   lty = c(1,1), cex = 1.9)
+IA_means <- c(0.166, 0.166, 0.166, 0.166, 0.166, 0.166)#
+#
+GF_means <- c(0.16, 0.19, 0.22, 0.25, 0.28, 0.31)#
+par(mar=c(5,6,4,1)+.1)#
+plot(x, IA_means, type = 'l', ylim = c(0.1,0.4),#
+	 ylab = "Proportion Exploratory Choices", #
+	 main = "Predicted Exploration Rates",#
+	 xlab = "Previous explores since last observed jump",#
+	 lty = 1,cex.axis = 1.9, cex.lab =1.9,#
+	 cex.main = 2.2, #
+	 col = "purple")#
+	 #,#
+	 #)
+lines(x, GF_means, lty=1, col=rgb(.1,.6,.1))#
+#
+legend(0.3, 0.38, c("Optimal", "Gambler's Fallacy"), #
+	   col = c("purple", rgb(.1,.6,.1)), #
+	   lty = c(1,1), cex = 1.9)
+alldata <- read.table('t1II_stim.txt', header=F)
+alldata
+names(alldata) <- c('cat', 'cat2', 'length', 'orient')
+plot(alldata$length, alldata$orient)

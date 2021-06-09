@@ -1,0 +1,74 @@
+#!/usr/bin/envpython
+"""
+setup.py-scriptforbuildingMyApplication
+
+Usage:
+ python setup.py py2app
+"""
+from distutils.core import setup
+import py2app
+
+setup(app=['melmat-rl.py'],
+data_files=[
+(".", ["./patterncode.txt", "./params.py"]),
+("images",
+[
+"images/back.gif",
+"images/boring-redbutton-pressed.gif",
+"images/basicinterface-b.gif",
+"images/boring-redbutton.gif",
+"images/basicinterface-discrete.gif",
+"images/break.gif",
+"images/basicinterface-old.gif",
+"images/instructions-0a.gif",
+"images/basicinterface.gif",
+"images/instructions-1a.gif",
+"images/basicinterface2.gif",
+"images/instructions-2a.gif",
+"images/basicinterface3.gif",
+"images/instructions-3a-dis.gif",
+"images/basicinterface5.gif",
+"images/instructions-3a.gif",
+"images/basicinterfaceold.gif",
+"images/instructions-3a2-dis.gif",
+"images/begin.gif",
+"images/instructions-3a2.gif",
+"images/instructions-3a3.gif",
+"images/bluebutton-pressed.gif",
+"images/instructions-4a.gif",
+"images/instructions-4a3.gif",
+"images/bluebutton.gif",
+"images/next.gif",
+"images/boring-basicinterface-discrete.gif",
+"images/redbutton-pressed.gif",
+"images/boring-basicinterface.gif",
+"images/redbutton.gif",
+"images/boring-bluebutton-pressed.gif",
+"images/statecont.gif",
+"images/boring-bluebutton.gif",
+"images/stateoff.gif",
+"images/boring-break.gif",
+"images/stateon.gif",
+"images/boring-instructions-0a.gif",
+"images/thanks.gif",
+"image/basicinterface-discrete_2.gif",
+"instructions-5a3.gif",
+"instructions-5a.gif",
+"image/basicinterface_aliasing.gif",
+"images/instructions_3x.gif",
+"images/instructions-4x.gif",
+"images/instructions_3x 2.gif",
+"images/instructions_3x 5.gif",
+"images/instructions_3x.gif",
+"images/interface_no_state.gif"
+]),
+("sounds",[
+"sounds/buttonpress.wav",
+"sounds/poweroffwav.wav",
+"sounds/recvdata.wav",
+"sounds/slide.wav"
+]
+),("data",["data/placeholder.txt"]),
+("lib")]
+)
+

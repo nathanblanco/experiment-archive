@@ -1,0 +1,1055 @@
+#!/usr/bin/pythonw
+
+#------------------------------------------------------------
+# Melioration/Matching Reinforcement Learning Experiment # 4
+# this is the summer 07 version including 
+# options for:
+# - continuous state information 
+# - show/hide state information
+# - new graphics
+# - reward signal is non-numeric (oxygen bits)
+# - option to strip down graphics to be 'boring' (i.e., non-martian)
+# programmed: todd gureckis May. 15th, 2007
+# data collected summer, 2007
+#------------------------------------------------------------
+
+#------------------------------------------------------------
+# to do list:
+#
+# 1. light instead of bar
+# 2. check output file
+#   - r/l = max
+#   - light on/off
+#   - left/right statelight
+# 3. boring version
+# 4. new instructions
+# 5. check output file
+#
+#
+#------------------------------------------------------------
+
+#------------------------------------------------------------
+# to build in py2app:
+#   python setup.py py2app
+#------------------------------------------------------------
+
+#------------------------------------------------------------
+# import modules
+#------------------------------------------------------------
+import os, sys, signal
+import math
+from string import *
+from numpy import *
+from ftplib import FTP
+from random import random, randint, shuffle, normalvariate
+import pygame
+import datetime
+from pygame.locals import *
+import tempfile
+from time import sleep
+from lib.pypsyexp import *
+
+execfile('params.py')
+#------------------------------------------------------------
+# Slider Classes 
+#------------------------------------------------------------
+class ContinuousStateButton(object):
+    def __init__(self, pos, myimage, order):
+        
+        stops = [[127,257], [285,415], [445,573], [603,733]]
+        
+        self.q1 = stops[order[0]]
+        self.q2 = stops[order[1]]
+        self.q3 = stops[order[2]]
+        self.q4 = stops[order[3]]
+        
+        
+        self.ycoord = 315
+        
+        self.moveto(pos)
+        self.image = myimage
+
+    
+    def moveto(self,pos):
+        if pos < .25:
+            self.rect = Rect(self.q1[0] + (float(pos-0)/(.25-0.0))*(self.q1[1]-self.q1[0]), self.ycoord, 100, 100)
+        elif pos >= .25 and pos < .50:
+            self.rect = Rect(self.q2[0]  + (float(pos-0.25)/(.5-0.25))*(self.q2[1]-self.q2[0]), self.ycoord, 100, 100)
+        elif pos >= .50 and pos < .75:
+            self.rect = Rect(self.q3[0]  + (float(pos-0.5)/(.75-0.5))*(self.q3[1]-self.q3[0]), self.ycoord, 100, 100)
+        elif pos >= .75:
+            self.rect = Rect(self.q4[0]  + (float(pos-0.75)/(1.0-0.75))*(self.q4[1]-self.q4[0]), self.ycoord, 100, 100)
+    
+    def draw(self, surface):
+        self.image_rect = self.image.get_rect()
+        self.image_rect.center = self.rect.center
+        surface.blit(self.image,self.image_rect)
+
+#------------------------------------------------------------
+# Slider Classes 
+#------------------------------------------------------------
+class RewardButton(object):
+    def __init__(self, pos, myimage):
+        
+        self.xcoord = 400
+        self.ycoord = 300
+        self.moveto(pos)
+        self.image = myimage
+    
+    def moveto(self,pos):
+        self.rect = Rect(self.xcoord, self.ycoord, 200, 100)
+    
+    def draw(self, surface):
+        self.image_rect = self.image.get_rect()
+        self.image_rect.center = self.rect.center
+        surface.blit(self.image,self.image_rect)
+
+#------------------------------------------------------------
+# MouseButton Classes (statelights, next, resp)
+#------------------------------------------------------------
+class StateButton(MouseButton):
+    def __init__(self, x, y, w, h, myimage):
+        # This is how you call the superclass init
+        MouseButton.__init__(self, x, y, w, h)
+        self.image = myimage
+    def draw(self, surface):
+        self.image_rect = self.image.get_rect()
+        self.image_rect.center = self.rect.center
+        surface.blit(self.image,self.image_rect)
+    def do(self):
+        print "Implemented in subclasses"
+
+class NextButton(MouseButton):
+    def __init__(self, x, y, w, h, myimage, snd, app):
+        # This is how you call the superclass init
+        MouseButton.__init__(self, x, y, w, h)
+        self.image = myimage
+        self.snd = snd
+    def draw(self, surface):
+        self.image_rect = self.image.get_rect()
+        self.image_rect.center = self.rect.center
+        surface.blit(self.image,self.image_rect)
+    def do(self):
+        self.snd.play()
+
+class RespButton(MouseButton):
+    def __init__(self, x, y, w, h, id, myimage, myimagepressed, snd, app):
+        # This is how you call the superclass init
+        MouseButton.__init__(self, x, y, w, h)
+        self.myid = id
+        self.image = myimage
+        self.imagep = myimagepressed
+        self.snd = snd
+    def draw(self, surface):
+        self.image_rect = self.image.get_rect()
+        self.image_rect.center = self.rect.center
+        surface.blit(self.image,self.image_rect)
+    def do(self, surface):
+        self.image_rect = self.imagep.get_rect()
+        self.image_rect.center = self.rect.center
+        surface.blit(self.imagep,self.image_rect)
+        pygame.display.flip()
+        self.snd.play()
+        pygame.time.wait(100)
+        self.image_rect = self.image.get_rect()
+        self.image_rect.center = self.rect.center
+        surface.blit(self.image,self.image_rect)
+        pygame.display.flip()
+        return self.myid
+
+class Alias_Dots:
+    
+    def __init__(self, rect, surface, color):
+        self.rect = rect
+        self.surface = surface
+        self.draw_dot(self.surface, color)
+        self.coords = (self.rect.x, self.rect.y)
+        
+    def draw_dot(self, surf, color):
+        new_surf = pygame.Surface([self.rect.w, self.rect.h])   
+        #new_surf.set_colorkey(black) 
+        destination_rect = Rect(0,0,self.rect.w,self.rect.h)
+        pygame.draw.ellipse(new_surf, color, destination_rect, 0)
+        surf.blit(new_surf, (self.rect.x,self.rect.y))
+        
+    def draw_center_dot(self, color, radius):
+        pygame.draw.circle(self.surface, color, [self.rect.centerx, self.rect.centery], radius, 0)
+
+
+#------------------------------------------------------------
+# MelMat Class
+#------------------------------------------------------------
+class MelMatExp(Experiment):
+    def __init__(self, laptop, screenres, payoff_type, experimentname):
+        
+        self.experimentname = experimentname
+        self.payoff_type = payoff_type
+        self.last_trial = None
+        self.marked = None
+        
+        [self.cond, self.ncond, self.subj] = self.get_cond_and_subj_number('patterncode.txt')
+        print "I am subject %s in condition %s" % (self.subj, self.cond)
+        
+        Experiment.__init__(self, laptop, screenres, experimentname)
+        
+        self.filename = "data/%s.dat" % self.subj
+        self.datafile = open(self.filename, 'w')
+        
+
+        self.dot_locs_10 = self.unit_circle(5)
+ 
+           
+        # balance if maximizing response is on the right or left
+        if self.subj%8 <= 3:
+            self.maxresp = 'r'
+        else:
+            self.maxresp = 'l'
+        
+        if self.subj%16 <= 7:
+            self.lightdir = 'r'
+        else:
+            self.lightdir = 'l'
+            
+        if self.subj%2 == 0:
+            self.direction = "cww"
+        else:
+            self.direction = "cw"
+        
+        self.lastten = self.calc_ten()
+        print "last 10 = ", self.lastten
+        
+        # determine which condition we are in (lights, nolights, randomlights)
+        #*************************************************************************
+        # Dont know what to do with this piece of code. You need to set it up.
+        # 
+        #*************************************************************************
+        if self.cond == 1 or self.cond == 0:
+            self.VARENV = 0.0
+            # ORDERLY STATES
+            self.showstates = True
+            if light_type == DISCRETE:
+                self.ordervector = range(11)
+            elif light_type == CONTINUOUS:
+                self.ordervector = range(4)
+            else:
+                self.ordervector = range(11)
+        #if self.cond == 0:
+        #    self.VARENV = 0.0
+            # ORDERLY STATES
+        #    self.showstates = True
+        #    if light_type == DISCRETE:
+        #        self.ordervector = range(11)
+        #    elif light_type == CONTINUOUS:
+        #        self.ordervector = range(4)
+        #    else:
+        #        self.ordervector = range(11)
+        
+        self.load_all_resources('images', 'sounds')
+        
+        # log time
+        self.output_trial([datetime.datetime.now().ctime()])
+        
+        print self.ordervector
+        self.output_trial(self.ordervector)
+        
+        print "max response = ", self.maxresp
+        self.output_trial([self.maxresp])
+        
+        print "light dir = ", self.lightdir
+        self.output_trial([self.lightdir])
+        
+        print "condition = ", self.cond
+        self.output_trial([self.cond])
+        
+        self.earnings = 0.0
+        self.last_resp = 'na'
+        self.last_earn = 0.0
+        #self.lastten = []
+    
+    
+    #------------------------------------------------------------
+    # show_break
+    #------------------------------------------------------------
+    def show_break(self, waittime):
+        background = self.show_centered_image(fnprefix+'break.gif',black)
+        self.update_display(background)
+        pygame.time.wait(waittime)
+        self.output_trial(['break'])
+    
+    #------------------------------------------------------------
+    # show_thanks
+    #------------------------------------------------------------
+    def show_thanks(self):
+        
+        background = self.show_centered_image('thanks.gif',white)
+        
+        # show subject number and experment name
+        exp_text = "EXPERIMENT NAME: %s" % self.experimentname
+        self.place_text_image(background, exp_text, 32, 0, 200, black, white)
+        
+        subj_text = "SUBJECT NUMBER: %s" % self.subj
+        self.place_text_image(background, subj_text, 32, 0, 250, black, white)
+        
+        subj_text = "TOTAL OXYGEN PRODUCED: %.2f" % self.earnings
+        self.place_text_image(background, subj_text, 32, 0, 300, black, white)
+        
+        if paid == True:
+            if self.earnings > MINEARN:
+                percentcash = (self.earnings-MINEARN)/(MAXEARN-MINEARN)
+            else:
+                percentcash = 0.0
+            subj_text = "CASH BONUS: %.2f" % (percentcash * 2.50)
+            self.place_text_image(background, subj_text, 32, 0, 350, black, white)
+            self.output_trial([self.earnings, (percentcash * 2.50)])
+        else:
+            self.output_trial([self.earnings])
+        
+        self.update_display(background)
+        
+        while 1:
+            [res, rescode, rt] = self.get_response()
+
+    
+    #------------------------------------------------------------
+    # get_click_response
+    #------------------------------------------------------------
+    def get_click_response(self):
+        exit = False;
+        while not exit:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    self.on_exit()
+                elif event.type == KEYDOWN:
+                    #if event.key == K_ESCAPE:
+                    #   self.on_exit()
+                    if pygame.key.get_pressed()[K_LSHIFT] and pygame.key.get_pressed()[K_BACKQUOTE]:
+                        self.on_exit()
+                elif event.type == MOUSEBUTTONDOWN:
+                    print("here")
+                    (x,y) = pygame.mouse.get_pos()
+                    for but in self.buttons:
+                        if (but.containsPoint(x, y)):
+                            rescode = but.do(self.screen)
+                            exit = True
+        return rescode
+    
+    #------------------------------------------------------------
+    # get_click_response_and_rt
+    #------------------------------------------------------------
+    def get_click_response_and_rt(self):
+        time_stamp = pygame.time.get_ticks()
+        res = self.get_click_response()
+        if (res == 'l'):
+            rescode = '1'
+        elif (res == 'r'):
+            rescode = '0'
+        
+        rt = pygame.time.get_ticks() - time_stamp
+        return [res, rescode, rt]
+    
+    #------------------------------------------------------------
+    # draw_statelights
+    #------------------------------------------------------------
+    def draw_statelights(self, mysurf, alloff=False,loc=None):
+        self.statelights = []
+        if self.showstates:
+            if alloff:
+                for i in range(11):
+                    self.statelights = self.statelights + [StateButton(250+i*40, 334, 65, 65,  self.resources['stateoff.gif'])]
+            else:
+                for i in  range(11):
+                    if loc != None:
+                            if loc==self.ordervector[i]:
+                                self.statelights = self.statelights + [StateButton(250+i*40, 334, 65, 65,  self.resources['stateon.gif'])]
+                            else:
+                                self.statelights = self.statelights + [StateButton(250+i*40, 334, 65, 65,  self.resources['stateoff.gif'])]                        
+                    else:
+                        if self.lightdir == 'r':
+                            if round(sum(self.lastten))==self.ordervector[i]:
+                                self.statelights = self.statelights + [StateButton(250+i*40, 334, 65, 65,  self.resources['stateon.gif'])]
+                            else:
+                                self.statelights = self.statelights + [StateButton(250+i*40, 334, 65, 65,  self.resources['stateoff.gif'])]
+                        else: # else move to left
+                            if (10-round(sum(self.lastten)))==self.ordervector[i]:
+                                self.statelights = self.statelights + [StateButton(250+i*40, 334, 65, 65,  self.resources['stateon.gif'])]
+                            else:
+                                self.statelights = self.statelights + [StateButton(250+i*40, 334, 65, 65,  self.resources['stateoff.gif'])]                        
+        for i in self.statelights:
+            i.draw(mysurf)
+ 
+
+    #------------------------------------------------------------
+    # draw_divider_bars
+    #------------------------------------------------------------
+    def draw_divider_bars(self, surface):
+
+        myrect = pygame.Rect(319, 350, 5, 30)
+        pygame.draw.rect(surface, divred, myrect)
+         
+        myrect = pygame.Rect(478, 350, 5, 30)
+        pygame.draw.rect(surface, divred, myrect)
+         
+        myrect = pygame.Rect(636, 350, 5, 30)
+        pygame.draw.rect(surface, divred, myrect)
+    
+    
+    #------------------------------------------------------------
+    # draw_buttons
+    #------------------------------------------------------------
+    def draw_buttons(self, mysurf):
+        self.buttons = []
+        self.buttons = self.buttons + [RespButton(190, 500, 65, 65, 'l', self.resources[fnprefix+'redbutton.gif'],self.resources[fnprefix+'redbutton-pressed.gif'],self.resources["buttonpress.wav"], self)]
+        self.buttons = self.buttons + [RespButton(710, 500, 65, 65, 'r', self.resources[fnprefix+'bluebutton.gif'],self.resources[fnprefix+'bluebutton-pressed.gif'],self.resources["buttonpress.wav"], self)]
+        for i in self.buttons:
+            i.draw(mysurf)
+    
+    #------------------------------------------------------------
+    # redraw_buttons_and_lights
+    #------------------------------------------------------------
+    def redraw_buttons(self, mysurf, loc=None):
+        for i in self.buttons:
+            i.draw(mysurf)
+    
+    #------------------------------------------------------------
+    # redraw_buttons_and_lights
+    #------------------------------------------------------------
+    def redraw_buttons_and_lights(self, mysurf, loc=None):
+        #self.draw_center_progress_bar(mysurf, 225, 354, 500, 30, black, ltgrey)
+        
+        if self.lightdir == 'r':
+            percentdone = self.WeightedState(self.lastten, DECAYPARAMETER)
+        else:
+            percentdone = 1.0-self.WeightedState(self.lastten, DECAYPARAMETER)
+        
+        if self.showstates:
+            if light_type == DISCRETE:
+                self.draw_statelights(mysurf,loc=loc)
+                # for i in self.statelights:
+                #     i.draw(mysurf)
+        
+            elif light_type == CONTINUOUS:
+                self.stateind.moveto(percentdone)
+                self.stateind.draw(mysurf)
+                
+            elif self.cond != 3:
+                self.alias_change(mysurf)
+                self.place_text_image(mysurf, "Soil Status", 14, -75, 220, black, screengreen)     
+
+        #if light_type == CONTINUOUS:
+            #self.draw_divider_bars(mysurf)
+        
+        for i in self.buttons:
+            i.draw(mysurf)
+            
+        if loc != None:
+            return loc
+        else:
+            return percentdone
+    
+    #---------------------------------------------------------------------------------------
+    # determines the location of the black dot based on lastten and # of locations
+    #---------------------------------------------------------------------------------------  
+    def current_state(self):
+        place = 0
+        for i in self.lastten:
+            place = place+i
+        if self.cond == 1:
+            place = round(place/2+0.5) # 9-15 added this and above line to change order of aliased states (light changes on every other state change)
+        if place >= len(self.dot_locs_10):
+            place = place%len(self.dot_locs_10)
+               
+        self.start_point = place      
+    
+    def unit_circle(self, spots):
+        angle_array = cumsum([360/spots]*spots)
+        coords_array = []
+        rect = Rect(381,490,100,100)
+        radius = .75*(abs(rect.top - rect.centery)-6)
+        offset = randint(0,360)
+        
+        print "radius = ", radius
+        #print "angle array = ", angle_array
+        #print "offset = ", offset
+        for i in angle_array:
+            #print "Before adjustments = ", [radius*cos(i), radius*sin(i)]
+            i = i + offset
+            if i > 360:
+                i = abs(360 - i)
+            i = i * (pi/180)
+            coords_array.append([radius*cos(i), radius*sin(i)])
+        
+        print coords_array
+        return coords_array
+    
+    #------------------------------------------------------------
+    # sets up and draws the dots
+    #------------------------------------------------------------              
+    def alias_change(self, surf):
+        rect = Rect(381,490,100,100) # area of the new screen
+        new_surf = pygame.Surface([rect.w, rect.h]) #surface of the screen
+        new_surf.set_colorkey(black)# currently only the dots will show, no bkgd
+        #radius = .75*(abs(rect.top - rect.centery))
+        
+        print "center = ", rect.centerx, rect.centery
+        for i in self.dot_locs_10:
+            x = i[0] + rect.centerx - rect.left+6# - 371+6  # 371 (rect.x) + 10 (1/2 dot radius) servers to center dots
+            y = i[1] + rect.centery - rect.top # - 269
+            print "loc = ", (x,y)
+            dot = Alias_Dots( Rect(x,y, 13,13), new_surf, (10,10,10))
+            self.current_state()
+            if self.dot_locs_10.index(i) == self.start_point:
+                dot.draw_center_dot(white, 4)
+                self.marked = dot.coords
+        
+        surf.blit(new_surf, (rect.x, rect.y))
+        self.last_trial = [new_surf, (rect.x, rect.y)] #keeps the results up
+        pygame.display.flip()
+    
+    #------------------------------------------------------------
+    # rotates the coords around in a circle
+    #------------------------------------------------------------          
+    def rotate(self,array):
+        
+        rotate_point = self.subj % len(self.dot_locs_10)
+        new_array = []
+        
+        for i in range(rotate_point):
+            new_array.append(array.pop(0))
+            
+        array += new_array 
+    
+    #------------------------------------------------------------
+    # determines how many ones are in the initial lastten
+    #------------------------------------------------------------    
+    def calc_ten(self):
+        vals = []
+        num_of_ones = self.subj%2
+        if num_of_ones == 0:
+            num_of_ones = 5
+            num_of_zeros = 4
+        else:
+            num_of_ones = 4
+            num_of_zeros = 5
+            
+        for i in range(num_of_ones):
+            vals.append(1)
+        for i in range(num_of_zeros):
+            vals.append(0)
+        
+        shuffle(vals)
+        return vals
+    #------------------------------------------------------------
+    # get_payoff
+    #------------------------------------------------------------
+    def get_payoff(self, res):
+        if self.payoff_type == VALUE:
+            return self.get_payoff_value(res)
+        elif self.payoff_type == PROB:
+            return self.get_payoff_prob(res)
+        elif self.payoff_type == VARIABLE:
+            return self.get_payoff_var(res)
+        elif self.payoff_type == VARIABLE_PROB:
+            return self.get_payoff_var_prob(res)
+    
+    
+    #------------------------------------------------------------
+    # get_payoff_value
+    #------------------------------------------------------------
+    def get_payoff_var(self, res):
+        return self.get_payoff_value(res) + int(normalvariate(0,self.VARENV))
+    
+    #------------------------------------------------------------
+    # get_payoff_var_prob
+    #------------------------------------------------------------
+    def get_payoff_var_prob(self, res):
+        """docstring for get_payoff_var_prob"""
+        print "Not implemented yet"
+        pass
+    
+    #------------------------------------------------------------
+    # WeightedState(h,p)
+    # weight the state by the choice history
+    #------------------------------------------------------------
+    def WeightedState(self, h,p):
+        """docstring for WeightedState"""
+        coeff = range(1,len(h)+1)
+        coeff.reverse()
+        coeff = map(lambda x: exp(-p*x), coeff)
+        return sum(array(coeff)*array(h))/float(sum(coeff))
+    
+    #------------------------------------------------------------
+    # get_payoff_value
+    #------------------------------------------------------------
+    def get_payoff_value(self, res):
+        if res == self.maxresp:
+            if len(self.lastten) > 0.0:
+                print average(self.lastten)
+                payoff = 10 + (70*(self.WeightedState(self.lastten, DECAYPARAMETER)))
+            else:
+                payoff = 10
+            #self.lastten.append(1.0)
+        else:
+            if len(self.lastten) > 0.0:
+                print average(self.lastten)
+                payoff = 30 + (70*(self.WeightedState(self.lastten, DECAYPARAMETER)))
+            else:
+                payoff = 30
+            #self.lastten.append(0.0)
+        return payoff
+    
+    #------------------------------------------------------------
+    # update_history
+    #------------------------------------------------------------
+    def update_history(self, res):
+        if res == self.maxresp:
+            self.lastten.append(1.0)
+        else:
+            self.lastten.append(0.0)
+    
+    #------------------------------------------------------------
+    # probreward
+    #------------------------------------------------------------
+    def probreward(self, p):
+        rval = 1;
+        if (random()<p):
+            rval = 130.0 + int(normalvariate(0,8))
+        else:
+            rval = 20.0 + int(normalvariate(0,8))
+        if rval < 0 :
+            rval = 0
+        if rval > 150:
+            rval = 150
+        return rval
+    
+    #------------------------------------------------------------
+    # computePayoffProb
+    #------------------------------------------------------------
+    def computePayoffProb(self, prop, choice):
+        rval = 0.0
+        if choice == 0:
+            rval = 1.0 - (.8)*(1-prop)
+        else:
+            rval = (.8) - (.8)*(1-prop)
+        return rval
+    
+    #------------------------------------------------------------
+    # get_payoff_prob
+    #------------------------------------------------------------
+    def get_payoff_prob(self, res):
+        
+        if res == self.maxresp:
+            prob = self.computePayoffProb(self.WeightedState(self.lastten, DECAYPARAMETER), 1)
+        else:
+            prob = self.computePayoffProb(self.WeightedState(self.lastten, DECAYPARAMETER), 0)        
+        return self.probreward(prob)
+    
+    #------------------------------------------------------------
+    # draw_oxygen_meter_dot
+    #------------------------------------------------------------
+    def draw_oxygen_meter_dots(self, mysurf, val):
+        """docstring for draw_oxygen_meter"""
+        buttonnum = 1
+        for row in range(10):
+            for num in range(10):
+                position = (mysurf.get_rect().centerx-85+(num*13), mysurf.get_rect().centery+190-(row*13))
+                if buttonnum <= val:
+                    pygame.draw.circle(mysurf, oxygreen, position, 4, 0)
+                    self.update_display(mysurf)
+                    #pygame.time.wait(10)
+                    
+                # else:
+                #     pygame.draw.circle(mysurf, white, position, 2, 0)
+                buttonnum+=1
+    
+    #------------------------------------------------------------
+    # draw_oxygen_meter
+    #------------------------------------------------------------
+    def draw_oxygen_meter(self, mysurf, val):
+        """docstring for draw_oxygen_meter"""
+       
+        if val == 0:
+            myrect = pygame.Rect(mysurf.get_rect().centerx-10, mysurf.get_rect().centery+210-150+15, 50, 150)
+            pygame.draw.rect(mysurf, black, myrect, 1)
+
+            x = 112.5
+            for i in range(3): # the markers on the bar
+                pygame.draw.line(mysurf, black, [mysurf.get_rect().centerx+30, mysurf.get_rect().centery+x], [mysurf.get_rect().centerx+38, mysurf.get_rect().centery+x], 1 )
+                x = x+37.5
+            
+            self.update_display(mysurf)
+        
+        val = (val/150.0)*150.0
+        if val > 150.0:
+            val = 150
+        
+        # NOTE TO TODD -> REMOVE REWARD BAR ANIMATION (take too long)
+        myrect = pygame.Rect(mysurf.get_rect().centerx-10, mysurf.get_rect().centery+210-val+15, 50, val)
+        pygame.draw.rect(mysurf, oxygreen, myrect)
+        
+        myrect = pygame.Rect(mysurf.get_rect().centerx-10, mysurf.get_rect().centery+210-150+15, 50, 150)
+        pygame.draw.rect(mysurf, black, myrect, 1)
+        
+        x = 112.5
+        for i in range(3): # the markers on the bar
+            pygame.draw.line(mysurf, black, [mysurf.get_rect().centerx+30, mysurf.get_rect().centery+x], [mysurf.get_rect().centerx+38, mysurf.get_rect().centery+x], 1 )
+            x = x+37.5
+        
+        self.update_display(mysurf)
+        # buttonnum = 1
+        # for row in range(10):
+        #     for num in range(10):
+        #         position = (mysurf.get_rect().centerx-85+(num*13), mysurf.get_rect().centery+190-(row*13))
+        #         if buttonnum <= val:
+        #             pygame.draw.circle(mysurf, oxygreen, position, 4, 0)
+        #             self.update_display(mysurf)
+        #             #pygame.time.wait(10)
+        #             
+        #         # else:
+        #         #     pygame.draw.circle(mysurf, white, position, 2, 0)
+        #         buttonnum+=1
+    
+    #------------------------------------------------------------
+    # do_trial
+    #------------------------------------------------------------
+    def do_trial(self, trialnum, countdown):
+        
+        if decoration == BORING:
+            screencol = boxgrey
+        else:
+            screencol = screengreen
+            
+        if light_type == DISCRETE:
+            bgfn = fnprefix+'basicinterface-discrete.gif'
+        elif light_type == CONTINUOUS:
+            bgfn = fnprefix+'basicinterface.gif'
+        else:
+            bgfn = fnprefix+'basicinterface_aliasing.gif'
+        
+        background = self.show_centered_image(bgfn,black)
+        if self.cond != 3:
+            self.alias_change(background)
+            self.place_text_image(background, "Soil Status", 14, -75, 220, black, screencol)     
+
+        self.place_text_image(background, "Choose", 25, -75, 78, black, screencol)
+        if self.last_trial != None:
+            background.blit(self.last_trial[0], self.last_trial[1])
+            
+        if countdown != -1:
+            self.place_text_image(background, "%s Choices Left!" % countdown, 67, -7, -125, white, black)
+        self.draw_oxygen_meter(background, 0) 
+        
+        # if self.cond == 3:
+        #             if light_type == DISCRETE:
+        #                 loc = randint(0,10)
+        #             else:
+        #                 loc = random()
+        #         else:
+        #         loc = None
+        loc=None
+        
+        self.redraw_buttons(background) 
+        self.update_display(background)
+        
+        
+        #pygame.time.wait(800)
+        #lightpos=self.redraw_buttons_and_lights(background,loc)
+        #self.redraw_buttons(background) #prob dont need
+        #     if light_type == DISCRETE:
+        #         self.draw_statelights(background)
+        #     elif light_type == CONTINUOUS:
+        #         self.stateind.draw(background)
+        #         self.draw_divider_bars(background)
+        #         
+        # self.draw_buttons(background)
+        #self.update_display(background)# prob dont need
+        
+        [res, rescode, rt] = self.get_click_response_and_rt()
+        pygame.mouse.set_visible(0)
+        
+        payoff = int(self.get_payoff(res))
+        self.last_resp = res
+        self.last_earn = payoff
+        self.earnings += payoff
+        
+        if sendrecv == True:
+            for steps in range(2):
+                background = self.show_centered_image(bgfn,black)
+                if countdown != -1:
+                    payoutstring = "%s Choices Left!" % countdown
+                    self.place_text_image(background, payoutstring, 67, -7, -125, white, black)
+                #self.redraw_buttons_and_lights(background,loc)
+                self.redraw_buttons(background)
+                self.draw_oxygen_meter(background, 0) 
+                self.update_display(background)
+                pygame.time.wait(80)
+                
+                self.place_text_image(background, "Sending", 40, -25, 98, black, screencol)
+                #self.redraw_buttons_and_lights(background,loc)
+                self.redraw_buttons(background)
+                self.draw_oxygen_meter(background, 0) 
+                self.update_display(background)
+                pygame.time.wait(80)
+            
+            pygame.time.wait(150)
+            
+            for steps in range(2):
+                background = self.show_centered_image(bgfn,black)
+                if countdown != -1:
+                    payoutstring = "%s Choices Left!" % countdown
+                    self.place_text_image(background, payoutstring, 67, -7, -125, white, black)
+                #self.redraw_buttons_and_lights(background,loc)
+                self.redraw_buttons(background)
+                self.draw_oxygen_meter(background, 0) 
+                self.update_display(background)
+                pygame.time.wait(80)
+                
+                self.place_text_image(background, "Receiving", 40, -25, 98, black, screencol)
+                #self.redraw_buttons_and_lights(background,loc)
+                self.redraw_buttons(background)
+                self.draw_oxygen_meter(background, 0) 
+                self.update_display(background)
+                pygame.time.wait(80)
+        
+        self.resources["recvdata.wav"].play()
+        
+        print self.lastten
+  
+        self.update_history(res)
+        if len(self.lastten) > 9:
+            self.lastten = self.lastten[-9:]
+
+        background = self.show_centered_image(bgfn,black)
+        if loc != None:
+            lightpos=self.redraw_buttons_and_lights(background,loc)
+        else:
+            lightpos=self.redraw_buttons_and_lights(background,None)
+        
+         
+        self.place_text_image(background, "Oxygen", 18, -75, 78, black, screencol)  
+        self.place_text_image(background, "Generated", 18, -75, 100, black, screencol)     
+        self.draw_oxygen_meter(background, payoff)      
+        self.update_display(background) 
+        pygame.time.wait(800)
+
+        
+        if self.maxresp==res:
+            hit = 1
+        else:
+            hit = 0
+        
+        place = 0
+        for i in self.lastten:
+            place = place+i           
+            
+            
+        # output results
+        # 1. output subj number, condition number, trial number, trialtype,  res, rt, pattern type, pattern, filename,
+        #    relative point, absolute point, what direction, dot condition 
+        #           ** a 'None' value for absolute point means that no dot are being displayed**
+        if self.marked == None:
+            self.markeda = -1
+            self.markedb = -1
+        else:
+            (self.markeda, self.markedb) = self.marked
+        self.output_trial([self.subj, self.trial, self.cond, decoration, light_type, payoff_type, DECAYPARAMETER, self.lightdir, lightpos, self.maxresp, res, rescode, hit, rt, payoff, self.earnings, place, self.markeda, self.markedb, self.direction])
+        
+        self.trial+=1
+        
+        # sleep for a while
+        # i set this so that the first 15 trials go a little slower, so you get used to
+        # what's going on, then it speeds up so you don't feel like it's slowing you down
+        self.escapable_sleep(250)
+        pygame.mouse.set_visible(1)
+    
+    #------------------------------------------------------------
+    # show_instructions
+    #------------------------------------------------------------
+    def show_instructions(self, filename, butfn, butfn2):
+        background = self.show_centered_image(filename, black)
+        self.screen.blit(background, (0,0))
+        self.button = NextButton(640, 725, 265, 50, self.resources[butfn],self.resources["buttonpress.wav"], self)
+        self.button.draw(self.screen)
+        if butfn2 != None:
+            self.button2 = NextButton(140, 725, 265, 50, self.resources[butfn2],self.resources["buttonpress.wav"], self)
+            self.button2.draw(self.screen)
+        pygame.display.flip()
+        
+        time_stamp = pygame.time.get_ticks()
+        
+        retval = NEXT
+        exit = False;
+        while not exit:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    self.on_exit()
+                elif event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        self.on_exit()
+                elif event.type == MOUSEBUTTONDOWN:
+                    print("here")
+                    (x,y) = pygame.mouse.get_pos()
+                    if (self.button.containsPoint(x, y)):
+                        self.button.do()
+                        exit = True
+                        retval = NEXT
+                    if butfn2 != None:
+                        if (self.button2.containsPoint(x, y)):
+                            self.button2.do()
+                            exit = True
+                            retval = BACK
+        rt = pygame.time.get_ticks() - time_stamp
+        return retval
+    
+    
+        
+    #------------------------------------------------------------
+    # do_regular_exp
+    #------------------------------------------------------------
+    def do_regular_exp(self):
+        
+        stage = 1
+        if decoration == BORING:
+            pass
+        else:
+            while(stage!=6):
+                if stage == 1:
+                    self.show_instructions('instructions-0a.gif','next.gif', None)
+                    stage = 2
+                elif stage == 2:
+                    if self.show_instructions('instructions-1a.gif','next.gif', 'back.gif')==BACK:
+                        stage = 1
+                    else:
+                        stage = 3
+                elif stage == 3:
+                    if self.show_instructions('instructions-2a.gif','next.gif', 'back.gif')==BACK:
+                        stage = 2
+                    else:
+                        stage = 4
+                elif stage == 4:
+                    if light_type == DISCRETE:
+                        if self.showstates:
+                            if self.show_instructions('instructions-3a2-dis.gif','next.gif', 'back.gif')==BACK:
+                                stage = 3
+                            else:
+                                stage = 5
+                        else:
+                            if self.show_instructions('instructions-3a-dis.gif','next.gif', 'back.gif')==BACK:
+                                stage = 3
+                            else:
+                                stage = 5                    
+                    elif light_type == CONTINUOUS:
+                        if self.showstates:
+                            if self.show_instructions('instructions-3a3.gif','next.gif', 'back.gif')==BACK:
+                                stage = 3
+                            else:
+                                stage = 5
+                        else:
+                            if self.show_instructions('instructions-3a.gif','next.gif', 'back.gif')==BACK:
+                                stage = 3
+                            else:
+                                stage = 5        
+                    else:
+                        if self.show_instructions("instructions-3-5state.png",'next.gif', 'back.gif')==BACK:
+                            stage = 3
+                        else:
+                            stage = 5                    
+                elif stage == 5:
+                    if self.show_instructions('instructions-4x.png','begin.gif', 'back.gif')==BACK:
+                        stage = 4
+                    else:
+                        stage = 6
+        
+        
+        ### set up interface
+        #
+        if light_type == DISCRETE:
+            background = self.show_centered_image(fnprefix+'basicinterface-discrete.gif',black)
+            #self.lastten = [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+        elif light_type == CONTINUOUS:
+            background = self.show_centered_image(fnprefix+'basicinterface.gif',black)
+            #self.lastten = [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+        else:
+            background = self.show_centered_image(fnprefix+'basicinterface_aliasing.gif', black)
+            #self.lastten = [0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+        
+        if self.showstates:
+            if light_type == DISCRETE:
+                self.draw_statelights(background, alloff=True)
+            elif light_type == CONTINUOUS:
+                self.stateind=ContinuousStateButton(self.WeightedState(self.lastten, DECAYPARAMETER),self.resources["statecont.gif"],self.ordervector)
+            else:
+                print "fill in later"
+                ### LOUIS REDRAW STATEs HERE I THINK
+                #################################################
+                # put in the base color code for the rect here
+                # also include animation
+                #################################################
+                
+                #self.stateind.draw(background)
+        
+        #if light_type == CONTINUOUS:
+            #self.draw_divider_bars(background)
+        
+        self.draw_buttons(background)
+        self.update_display(background)
+        
+        self.resources["poweroffwav.wav"].play()
+        if self.cond != 3:
+            #self.rotate(self.dot_locs_10)                
+            if self.direction == "ccw":
+                self.dot_locs_10.reverse()
+                print "ccw"
+            
+        
+                        
+        for i in range(1,ntrials+1):
+            
+            if(ntrials - i) < 5:
+                self.do_trial(i,ntrials-i+1) # show countdown
+            else:
+                self.do_trial(i,-1)
+            
+            if i%breakevery == 0 and i!=ntrials:
+                self.show_break(5000)
+                
+                # set up interface
+                if light_type == DISCRETE:
+                    background = self.show_centered_image(fnprefix+'basicinterface-discrete.gif',black)
+                elif light_type == CONTINUOUS:
+                    background = self.show_centered_image(fnprefix+'basicinterface.gif',black)
+                else:
+                    background = self.show_centered_image(fnprefix+'basicinterface_aliasing.gif',black)
+                
+                if self.showstates:
+                    if light_type == DISCRETE:
+                        self.draw_statelights(background)
+                    elif light_type == CONTINUOUS:
+                        self.stateind.draw(background)
+                    ## dont need to add anything here unless there is a base state
+                    ### LOUIS REDRAW STATES HERE I THINK
+                
+                #if light_type == CONTINUOUS:
+                    #self.draw_divider_bars(background)
+                
+                self.draw_buttons(background)
+                self.update_display(background)
+                
+                self.resources["poweroffwav.wav"].play()
+                pygame.time.wait(2000)
+        
+        
+        self.show_thanks()
+
+#-----------------------
+# main                   
+#------------------------
+def main():
+    global laptop, experimentname;
+    experiment = MelMatExp(laptop, screenres, payoff_type, experimentname)
+    experiment.do_regular_exp()
+
+#------------------------------------------------------------
+# let's start
+#------------------------------------------------------------
+if __name__ == '__main__':
+    main()

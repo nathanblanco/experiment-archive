@@ -1,0 +1,11 @@
+Reinforcement Learning -- Farming on Mars -- Aliasing -- Experiment 2
+
+This experiment tests the effect of the pattern of perceptual aliasing by manipulating which states are aliased to the same cue.
+This version of the experiment runs 2 conditions:
+
+condition 0:  5 cues
+	state-cue mapping:  ABCDEABCDE
+
+condition 1:  5 cues
+	state-cue mapping:  AABBCCDDEE
+

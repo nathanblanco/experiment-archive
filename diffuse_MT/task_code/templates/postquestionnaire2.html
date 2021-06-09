@@ -1,0 +1,58 @@
+<div id="container-questionnaire">
+    <h1>Task Complete</h1>
+
+    <hr>
+
+    <p>You are finished!  Thank you for your contributions to science. You will be eligible for full payment once you answer the following question.</p>
+
+    <div class="instructions well">
+
+        <form id="postquiz" action="debrief" method="post">
+
+  
+            <!-- beginning of a question -->
+            <div class="row question">
+                <div class="col-md-8">
+                    Have you ever taken a study similar to this one?
+                </div>
+                <div class="col-md-4" style="display:inline;">
+
+					<input type="radio" name="taken_before" value="yes" id="yes">&nbsp;Yes
+					<input type="radio" name="taken_before" value="no" id="no" checked="checked">&nbsp;No
+
+                </div>
+            </div>
+            <!-- end of a question -->
+
+        <!-- beginning of a question -->
+            <div class="row question">
+                <div class="col-md-8" style="width:100%;padding-left:20px;">
+                    If yes, please describe how.
+                </div>
+                <div class="col-md-4" style="padding-top:15px;">
+                    <textarea name="taken_before_desc" cols="70" rows="5" required></textarea>
+                </div>
+            </div>
+            <!-- end of a question -->
+            
+        </form>
+    </div>
+
+    <hr>
+
+    <div class="instructionsnav">
+        <div class="row">
+            <div class="col-xs-2">
+            </div>
+            <div class="col-xs-7">
+            </div>
+            <div class="col-xs-3">
+                <button type="button" id="next" value="next" class="btn btn-primary btn-lg continue">
+                    Finish <span class="glyphicon glyphicon-arrow-right"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+</div>

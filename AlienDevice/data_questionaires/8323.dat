@@ -1,0 +1,6 @@
+Thu Apr 17 11:12:01 2014 
+y y y y y y y n y y y n n n n n y y y n n y y n y n n n n n y y y y y n y y n n y n y n n y y n 
+3 2 2 3 2 2 3 3 3 2 1 3 3 2 3 2 2 1 1 3 1 2 2 2 2 2 2 2 4 3 
+1 1 4 2 1 1 4 1 1 4 3 1 1 1 4 1 3 1 1 1 1 3 1 1 2 1 3 1 1 1 1 2 1 1 1 1 1 2 3 1 2 1 4 1 1 1 3 1 4 2 1 1 4 1 1 4 2 3 1 4 1 1 
+4 4 1 4 3 3 4 4 1 3 2 1 2 1 
+self.subj self.age self.gender self.education self.cesd_score 57 17 10 92 9 

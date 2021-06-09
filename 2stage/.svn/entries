@@ -1,0 +1,104 @@
+8
+
+dir
+103
+https://nathanblanco@compcog.svn.beanstalkapp.com/rl_mars_task/tags/aliasing%20v1.1
+https://nathanblanco@compcog.svn.beanstalkapp.com/rl_mars_task
+
+
+
+2009-09-16T17:34:32.785676Z
+103
+gureckis
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+91d12f92-7cc0-4098-b2dc-31846da64694
+
+exp.py
+file
+109
+
+
+
+2009-10-06T18:15:48.000000Z
+5f53a26f62175e8eefef140fbeaa7bff
+2009-10-06T18:23:13.203437Z
+109
+nathanblanco
+
+images
+dir
+
+lib
+dir
+
+patterncode.txt
+file
+106
+
+
+
+2009-09-16T18:22:38.000000Z
+c810bed0245d05a3183fc86df5ae580a
+2009-09-16T18:28:41.783245Z
+106
+nathanblanco
+has-props
+
+setup.py
+file
+106
+
+
+
+2009-09-15T18:23:47.000000Z
+23454ec3eb6f58e611130744bd9ce5f4
+2009-09-16T18:28:41.783245Z
+106
+nathanblanco
+
+ai
+dir
+
+data
+dir
+
+params.py
+file
+106
+
+
+
+2009-09-15T18:23:47.000000Z
+50d48f6ec8443927971e2d73ab8711d6
+2009-09-16T18:28:41.783245Z
+106
+nathanblanco
+
+sounds
+dir
+
+readme.txt
+file
+108
+
+
+
+2009-09-16T18:51:11.000000Z
+6bbbbaf4a21f6759f1bdc5d132456690
+2009-09-16T18:47:34.706962Z
+108
+nathanblanco
+

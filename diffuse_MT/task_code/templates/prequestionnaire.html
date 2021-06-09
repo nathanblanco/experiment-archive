@@ -1,0 +1,97 @@
+<div id="container-questionnaire">
+    <h1>Pre-Questionnaire</h1>
+
+    <hr>
+
+    <p>Once you have answered the questions below, click continue to begin the instructions.</p>
+
+    <div class="instructions well">
+
+        <form id="postquiz" action="debrief" method="post">
+
+            <!-- beginning of a question -->
+            <div class="row question">
+                <div class="col-md-8">
+                    What is your gender?
+                </div>
+                <div class="col-md-4">
+                    <select id="gender" name="gender">
+                        <option value="female" SELECTED>Female</option>
+                        <option value="male">Male</option>
+                        <option value="other">Other</option>
+                      
+                    </select>
+                </div>
+            </div>
+            <!-- end of a question -->
+            
+            <!-- beginning of a question -->
+            <div class="row question">
+                <div class="col-md-8">
+                    What is your current age? (Please enter a number)
+                </div>
+                <div class="col-md-4">
+                    <textarea name="age" id="age" cols="5" rows="1" maxlength="3" required style="padding-top:10px;"></textarea>
+                </div>
+            </div>
+            <!-- end of a question -->
+            
+            <!-- beginning of a question -->
+            <div class="row question">
+                <div class="col-md-8">
+                    Are you hispanic/latino?
+                </div>
+                <div class="col-md-4">
+                    <select id="hispanic" name="hispanic">
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                        <option value="na" SELECTED>Prefer not to answer</option>
+                      
+                    </select>
+                </div>
+            </div>
+            <!-- end of a question -->
+            
+            <!-- beginning of a question -->
+            <div class="row question">
+                <div class="col-md-8">
+                    Which of these do you most identify with?
+                </div>
+                
+                <div class="col-md-4">
+                    <select id="race" name="race">
+                        <option value="asian">Asian</option>
+                        <option value="africanamercian">African American</option>
+                        <option value="americanindian">American Indian</option>
+                        <option value="caucasian">Caucasian</option>
+                        <option value="pacificislander">Pacific Islander</option>
+                        <option value="multiracial">Biracial/Multiracial</option>
+                        <option value="other">Other</option>
+                        <option value="na" SELECTED>Prefer not to answer</option>
+                    </select>
+                </div>
+            </div>
+            <!-- end of a question -->
+            
+            
+        </form>
+    </div>
+
+    <hr>
+
+    <div class="instructionsnav">
+        <div class="row">
+            <div class="col-xs-2">
+            </div>
+            <div class="col-xs-7">
+            </div>
+            <div class="col-xs-3">
+                <button type="button" id="next" value="next" class="btn btn-primary btn-lg continue">
+                    Continue <span class="glyphicon glyphicon-arrow-right"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+</div>

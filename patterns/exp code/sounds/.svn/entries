@@ -1,0 +1,68 @@
+8
+
+dir
+106
+https://nathanblanco@compcog.svn.beanstalkapp.com/rl_mars_task/tags/aliasing%20v1.1/sounds
+https://nathanblanco@compcog.svn.beanstalkapp.com/rl_mars_task
+
+
+
+2009-09-16T18:28:41.783245Z
+106
+nathanblanco
+
+
+svn:special svn:externals svn:needs-lock
+
+poweroffwav.wav
+file
+
+
+
+
+2009-09-15T18:23:47.000000Z
+3c6dc5337af04f5762fc36d2cf40143a
+2009-09-16T18:28:41.783245Z
+106
+nathanblanco
+has-props
+
+buttonpress.wav
+file
+
+
+
+
+2009-09-15T18:23:47.000000Z
+7c0df336272efe649ba8e4119436082f
+2009-09-16T18:28:41.783245Z
+106
+nathanblanco
+has-props
+
+recvdata.wav
+file
+
+
+
+
+2009-09-15T18:23:47.000000Z
+61013b74ca17292837a848ba2128129a
+2009-09-16T18:28:41.783245Z
+106
+nathanblanco
+has-props
+
+slide.wav
+file
+
+
+
+
+2009-09-15T18:23:47.000000Z
+a85440ea80955943b9c0edb39eb67664
+2009-09-16T18:28:41.783245Z
+106
+nathanblanco
+has-props
+

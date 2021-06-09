@@ -1,0 +1,67 @@
+#------------------------------------------------------------
+# defines
+#------------------------------------------------------------
+LAPTOPRES = (1024, 768)
+FULLSCREENRES = (1024, 768)
+
+# payoff types
+VALUE = 1
+PROB = 2
+VARIABLE = 3
+VARIABLE_PROB = 4
+
+NEXT = 1
+BACK = 0
+
+NONLINEAR = 2
+DISCRETE = 1
+CONTINUOUS = 0
+
+MARS = 1
+BORING = 0
+
+DECAYPARAMETER = 0.0
+
+experimentname = 'melioration/maximizing'
+laptop = True
+paid = True
+ntrials = 500
+breakevery = 100
+
+    
+payoff_type = VARIABLE
+light_type = NONLINEAR # DISCRETE/CONTINUOUS
+decoration = MARS # MARS/BORING
+sendrecv = False
+
+if decoration == BORING:
+    fnprefix = 'boring-'
+else:
+    fnprefix = ''
+            
+if light_type == DISCRETE:
+    DECAYPARAMETER = 0.0
+
+if payoff_type == PROB or payoff_type == VARIABLE_PROB:
+    MINEARN = 21982.5
+    MAXEARN = 37492.5
+else:
+    MINEARN = 5000.0
+    MAXEARN = 40000.0
+       
+if laptop:
+    screenres = LAPTOPRES
+else:
+    screenres = FULLSCREENRES
+
+# colors
+white = (255, 255, 255)
+grey = (175,175,175)
+boxgrey = (128,128,128)
+black = (0, 0, 0)
+blue = (0, 0, 175)
+green = (0,175,0)
+oxygreen = (22,71,8)
+screengreen = (173,198,156)
+ltgrey = (193,193,193)
+divred = (102,63,62)
